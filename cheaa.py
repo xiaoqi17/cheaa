@@ -22,21 +22,22 @@ def index_html(headers,i):
         urls = soup.select(' div.clear.news-mid > div > a')
         for url in urls:
             url = url.get('href')
-            item_info.insert_one({'url':url})
-            yield url
+            if item_info.find_one({'url': url}):
+                print '%s爬过' % url
+            else:
+                yield url
     except ConnectionError:
         pass
 
 def title_html(url,headers):
     try:
-        if item_info.find_one({'url': url}):
-            print '%s爬过'%url
-        else:
+
             response = requests.get(url, headers=headers)
             soup = BeautifulSoup(response.text, 'lxml')
             titles = soup.find_all('h1')
             for title in titles:
                 title = title.get_text()
+                item_info.insert_one({'url': url})
                 return title
     except ConnectionError:
         print('Error occurred')
@@ -44,6 +45,7 @@ def title_html(url,headers):
 
 def text_html(url,headers):
     try:
+
         response = requests.get(url, headers=headers)
         soup = BeautifulSoup(response.text, 'lxml')
         texts = soup.select('#ctrlfscont')
