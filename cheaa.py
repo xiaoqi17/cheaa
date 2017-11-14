@@ -60,6 +60,8 @@ def text_html(url,headers):
 
 def write_to_file(text,title):
     try:
+        path = 'wenzhan'
+        os.chdir("D:\Python\cheaa\\" + path)
         with open(title + ".doc", 'w' ) as f:
             f.write(str(text))
             f.close()
